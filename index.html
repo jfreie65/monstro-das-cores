@@ -109,13 +109,20 @@ canvas{width:100%;height:auto;aspect-ratio:4/3;background:#fff;border:3px solid 
 .pdf:hover{background:#FFF3D6}
 .fsbtn{position:fixed;top:12px;right:12px;z-index:50;background:#fff;border:2px solid var(--ink);border-radius:999px;padding:8px 14px;font-weight:800;color:var(--ink);box-shadow:0 2px 6px rgba(0,0,0,.12)}
 .fsbtn:hover{background:#FFF3D6}
+.fsbig{display:flex;align-items:center;gap:14px;width:100%;margin:0 0 20px;padding:16px 20px;background:var(--ink);color:#fff;border:0;border-radius:20px;text-align:left;box-shadow:0 4px 0 #000}
+.fsbig[hidden]{display:none}
+.fsbig .ic{font-size:34px;line-height:1}
+.fsbig b{font-family:"Baloo 2";font-size:24px}
+.fsbig small{color:#d8d8e0;font-size:15px}
+.fsbig:hover{transform:translateY(-2px)}
+.fsbig:active{transform:translateY(2px);box-shadow:0 2px 0 #000}
 .teacher{margin-top:28px;background:#fff;border:2px dashed var(--line);border-radius:18px;padding:16px}
 .teacher summary{font-weight:800;cursor:pointer}
 footer{margin-top:24px;font-size:14px;color:var(--muted);text-align:center}
 </style>
 </head>
 <body>
-<button class="fsbtn" id="fsBtn" hidden>⛶ Ecrã inteiro</button>
+<button class="fsbtn" data-fs hidden>⛶ Ecrã inteiro</button>
 <div class="wrap">
 
 <!-- MENU -->
@@ -123,6 +130,7 @@ footer{margin-top:24px;font-size:14px;color:var(--muted);text-align:center}
   <header class="top"><h1 style="font-size:40px">Os Frascos das Emoções</h1></header>
   <div class="stripe"><span style="background:var(--alegria)"></span><span style="background:var(--tristeza)"></span><span style="background:var(--raiva)"></span><span style="background:var(--medo)"></span><span style="background:var(--calma)"></span></div>
   <p class="intro">Depois de ouvires a história <b>«O Monstro das Cores»</b>, vamos arrumar as emoções, cada uma no seu frasco! Escolhe uma atividade.</p>
+  <button class="fsbig" data-fs hidden><span class="ic">⛶</span><span><b class="fsl">Ver em ecrã inteiro</b><br><small>Recomendado para trabalhar no computador ou no quadro interativo</small></span></button>
   <div class="grid">
     <button class="act" style="--c:var(--alegria)" data-go="frascos"><span class="num">1</span><h3>Arruma as emoções</h3><p>Lê cada situação e coloca-a no frasco da emoção que sentirias.</p></button>
     <button class="act" style="--c:var(--tristeza)" data-go="checkin"><span class="num">2</span><h3>Como me sinto hoje?</h3><p>Escolhe a tua cor, diz quanto sentes e porquê. No fim recebes o teu bilhete.</p></button>
@@ -522,19 +530,28 @@ cv.addEventListener("pointermove",e=>{ if(!drawing) return; const p=pos(e); ctx.
 function dot(p){ctx.fillStyle=pen.color; ctx.beginPath(); ctx.arc(p.x,p.y,pen.size*(cv.width/cv.getBoundingClientRect().width)*.3,0,Math.PI*2); ctx.fill();}
 /* ---------- ecrã inteiro ---------- */
 (function(){
-  const b=document.getElementById("fsBtn"), d=document.documentElement;
+  const btns=document.querySelectorAll("[data-fs]"), d=document.documentElement;
   const req=d.requestFullscreen||d.webkitRequestFullscreen;
   const inFrame=window.self!==window.top;
   if(!req && !inFrame) return;
-  b.hidden=false;
+  btns.forEach(b=>b.hidden=false);
   const isFs=()=>document.fullscreenElement||document.webkitFullscreenElement;
-  const upd=()=>{b.textContent=isFs()?"✕ Sair do ecrã inteiro":"⛶ Ecrã inteiro";};
-  b.onclick=()=>{
+  const upd=()=>{
+    const on=isFs();
+    btns.forEach(b=>{
+      const l=b.querySelector(".fsl");
+      if(l) l.textContent=on?"Sair do ecrã inteiro":"Ver em ecrã inteiro";
+      else b.textContent=on?"✕ Sair do ecrã inteiro":"⛶ Ecrã inteiro";
+      const ic=b.querySelector(".ic"); if(ic) ic.textContent=on?"✕":"⛶";
+    });
+  };
+  const toggle=()=>{
     if(isFs()){(document.exitFullscreen||document.webkitExitFullscreen).call(document);return;}
     if(req && (document.fullscreenEnabled||document.webkitFullscreenEnabled)){
       Promise.resolve(req.call(d)).catch(()=>window.open(location.href,"_blank"));
     } else { window.open(location.href,"_blank"); }
   };
+  btns.forEach(b=>b.onclick=toggle);
   document.addEventListener("fullscreenchange",upd); document.addEventListener("webkitfullscreenchange",upd);
 })();
 </script>
