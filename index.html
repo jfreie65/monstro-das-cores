@@ -107,12 +107,15 @@ canvas{width:100%;height:auto;aspect-ratio:4/3;background:#fff;border:3px solid 
 .pdf{display:flex;align-items:center;gap:14px;margin-top:18px;padding:14px 18px;background:#fff;border:3px solid var(--ink);border-radius:20px;color:var(--ink);text-decoration:none;font-size:30px}
 .pdf span{font-size:18px;line-height:1.3}.pdf small{font-size:15px;color:var(--muted)}
 .pdf:hover{background:#FFF3D6}
+.fsbtn{position:fixed;top:12px;right:12px;z-index:50;background:#fff;border:2px solid var(--ink);border-radius:999px;padding:8px 14px;font-weight:800;color:var(--ink);box-shadow:0 2px 6px rgba(0,0,0,.12)}
+.fsbtn:hover{background:#FFF3D6}
 .teacher{margin-top:28px;background:#fff;border:2px dashed var(--line);border-radius:18px;padding:16px}
 .teacher summary{font-weight:800;cursor:pointer}
 footer{margin-top:24px;font-size:14px;color:var(--muted);text-align:center}
 </style>
 </head>
 <body>
+<button class="fsbtn" id="fsBtn" hidden>⛶ Ecrã inteiro</button>
 <div class="wrap">
 
 <!-- MENU -->
@@ -517,6 +520,23 @@ cv.addEventListener("pointerdown",e=>{drawing=true; last=pos(e); cv.setPointerCa
 cv.addEventListener("pointermove",e=>{ if(!drawing) return; const p=pos(e); ctx.strokeStyle=pen.color; ctx.lineWidth=pen.size*(cv.width/cv.getBoundingClientRect().width)*.6; ctx.lineCap="round"; ctx.lineJoin="round"; ctx.beginPath(); ctx.moveTo(last.x,last.y); ctx.lineTo(p.x,p.y); ctx.stroke(); last=p; });
 ["pointerup","pointercancel","pointerleave"].forEach(t=>cv.addEventListener(t,()=>drawing=false));
 function dot(p){ctx.fillStyle=pen.color; ctx.beginPath(); ctx.arc(p.x,p.y,pen.size*(cv.width/cv.getBoundingClientRect().width)*.3,0,Math.PI*2); ctx.fill();}
+/* ---------- ecrã inteiro ---------- */
+(function(){
+  const b=document.getElementById("fsBtn"), d=document.documentElement;
+  const req=d.requestFullscreen||d.webkitRequestFullscreen;
+  const inFrame=window.self!==window.top;
+  if(!req && !inFrame) return;
+  b.hidden=false;
+  const isFs=()=>document.fullscreenElement||document.webkitFullscreenElement;
+  const upd=()=>{b.textContent=isFs()?"✕ Sair do ecrã inteiro":"⛶ Ecrã inteiro";};
+  b.onclick=()=>{
+    if(isFs()){(document.exitFullscreen||document.webkitExitFullscreen).call(document);return;}
+    if(req && (document.fullscreenEnabled||document.webkitFullscreenEnabled)){
+      Promise.resolve(req.call(d)).catch(()=>window.open(location.href,"_blank"));
+    } else { window.open(location.href,"_blank"); }
+  };
+  document.addEventListener("fullscreenchange",upd); document.addEventListener("webkitfullscreenchange",upd);
+})();
 </script>
 </body>
 </html>
