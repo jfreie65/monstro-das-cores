@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Os Frascos das Emoções — atividades sobre «O Monstro das Cores»</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Nunito:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --alegria:#F5C02B; --tristeza:#3A7BD5; --raiva:#E2453B; --medo:#2B2B36; --calma:#3BAA66;
+  --bg:#FFF9EF; --ink:#2A2A35; --muted:#6B6B78; --card:#fff; --line:#EADFCB;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{font-family:"Nunito",system-ui,sans-serif;background:var(--bg);color:var(--ink);font-size:18px;line-height:1.45}
+h1,h2,h3{font-family:"Baloo 2",cursive;line-height:1.1;margin:0 0 .4em}
+button{font:inherit;cursor:pointer}
+.wrap{max-width:980px;margin:0 auto;padding:20px 16px 60px}
+header.top{display:flex;align-items:center;gap:14px;margin-bottom:8px}
+.stripe{display:flex;height:10px;border-radius:6px;overflow:hidden;margin:6px 0 18px}
+.stripe span{flex:1}
+.back{background:#fff;border:2px solid var(--line);border-radius:999px;padding:6px 16px;font-weight:800;color:var(--ink)}
+.back:hover{border-color:var(--ink)}
+.intro{color:var(--muted);margin:0 0 18px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
+.act{background:var(--card);border:3px solid var(--line);border-radius:22px;padding:18px;text-align:left;display:flex;flex-direction:column;gap:8px;transition:transform .15s,border-color .15s;min-height:170px}
+.act:hover,.act:focus-visible{transform:translateY(-3px);border-color:var(--c,var(--ink));outline:none}
+.act .num{display:inline-grid;place-items:center;width:38px;height:38px;border-radius:50%;background:var(--c);color:#fff;font-family:"Baloo 2";font-weight:800;font-size:20px}
+.act h3{font-size:24px;margin:4px 0 0}
+.act p{margin:0;color:var(--muted);font-size:16px}
+.view{display:none}
+.view.on{display:block;animation:fade .25s}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1}}
+.panel{background:#fff;border:3px solid var(--line);border-radius:22px;padding:18px;margin-top:12px}
+.btn{background:var(--ink);color:#fff;border:0;border-radius:14px;padding:12px 20px;font-weight:800}
+.btn.ghost{background:#fff;color:var(--ink);border:2px solid var(--ink)}
+.btn:disabled{opacity:.4;cursor:default}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.center{text-align:center}
+.small{font-size:15px;color:var(--muted)}
+
+/* emotion chips */
+.emos{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+.emo{border:3px solid transparent;border-radius:18px;padding:10px 16px;font-weight:800;color:#fff;background:var(--c);min-width:120px}
+.emo.light{color:#3a2c00}
+.emo[aria-pressed="true"]{border-color:var(--ink);box-shadow:0 0 0 4px #fff inset;transform:scale(1.05)}
+
+/* Jars */
+.jars{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:16px}
+.jar{background:none;border:0;padding:0;display:flex;flex-direction:column;align-items:center;gap:4px}
+.jar svg{width:100%;max-width:130px;height:auto}
+.jar .lbl{font-weight:800;font-size:15px}
+.jar.ready svg{animation:wob .6s infinite alternate}
+@keyframes wob{to{transform:translateY(-4px)}}
+.cards{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;min-height:60px}
+.sit{background:#fff;border:3px dashed #cbbd9f;border-radius:16px;padding:12px 14px;max-width:260px;font-weight:600;text-align:left}
+.sit[aria-pressed="true"]{border-style:solid;border-color:var(--ink);background:#FFF3D6}
+.feedback{min-height:52px;text-align:center;font-weight:700;margin:12px 0 0;padding:10px;border-radius:14px}
+
+/* check-in */
+.steps{display:flex;gap:6px;justify-content:center;margin-bottom:10px}
+.steps i{width:30px;height:8px;border-radius:4px;background:#e8dcc4}
+.steps i.on{background:var(--ink)}
+.scale{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.scale button{width:62px;height:62px;border-radius:50%;border:3px solid var(--ink);background:#fff;font-family:"Baloo 2";font-size:24px;font-weight:800}
+.scale button[aria-pressed="true"]{background:var(--sel,var(--ink));color:#fff}
+.chip{border:2px solid var(--ink);background:#fff;border-radius:999px;padding:8px 14px;font-weight:700}
+.chip[aria-pressed="true"]{background:var(--ink);color:#fff}
+textarea{width:100%;min-height:90px;font:inherit;border:2px solid var(--line);border-radius:14px;padding:10px}
+textarea:focus{outline:none;border-color:var(--ink)}
+.ticket{border:4px solid var(--sel,var(--ink));border-radius:20px;padding:18px;background:#fff;max-width:520px;margin:0 auto}
+.ticket h3{color:var(--sel)}
+
+/* my jar */
+.myjar{display:grid;grid-template-columns:minmax(200px,280px) 1fr;gap:20px;align-items:center}
+@media (max-width:640px){.myjar{grid-template-columns:1fr}.jars{grid-template-columns:repeat(3,1fr)}}
+.slider{display:grid;grid-template-columns:110px 1fr 40px;gap:10px;align-items:center;margin:8px 0}
+.slider label{font-weight:800}
+input[type=range]{width:100%;accent-color:var(--c)}
+
+/* quiz */
+.face{width:140px;height:140px;margin:0 auto;display:block}
+.opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-top:14px}
+.opt{border:3px solid var(--c);background:#fff;border-radius:16px;padding:12px;font-weight:800}
+.opt.ok{background:var(--c);color:#fff}
+.opt.no{opacity:.35}
+.prog{height:10px;background:#efe4cf;border-radius:6px;overflow:hidden;margin-bottom:12px}
+.prog div{height:100%;background:var(--ink);transition:width .3s}
+
+/* calm */
+.strats{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin-top:12px}
+.strat{border:3px solid var(--c);border-radius:16px;padding:12px;background:#fff;text-align:left;font-weight:700}
+.strat[aria-pressed="true"]{background:var(--c);color:#fff}
+.strat .e{font-size:28px;display:block}
+.breath{width:220px;height:220px;margin:10px auto;display:grid;place-items:center;position:relative}
+.breath .ball{position:absolute;inset:0;margin:auto;width:90px;height:90px;border-radius:50%;background:var(--calma);opacity:.85;transition:width 4s ease-in-out,height 4s ease-in-out}
+.breath.in .ball{width:210px;height:210px}
+.breath span{position:relative;font-family:"Baloo 2";font-weight:800;font-size:26px;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.3)}
+
+/* draw */
+.drawbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:10px}
+.sw{width:42px;height:42px;border-radius:50%;border:3px solid #fff;box-shadow:0 0 0 2px var(--line)}
+.sw[aria-pressed="true"]{box-shadow:0 0 0 3px var(--ink)}
+canvas{width:100%;height:auto;aspect-ratio:4/3;background:#fff;border:3px solid var(--line);border-radius:18px;touch-action:none;display:block}
+.prompt{background:#FFF3D6;border-radius:14px;padding:10px 14px;font-weight:700;margin-bottom:10px}
+.pdf{display:flex;align-items:center;gap:14px;margin-top:18px;padding:14px 18px;background:#fff;border:3px solid var(--ink);border-radius:20px;color:var(--ink);text-decoration:none;font-size:30px}
+.pdf span{font-size:18px;line-height:1.3}.pdf small{font-size:15px;color:var(--muted)}
+.pdf:hover{background:#FFF3D6}
+.teacher{margin-top:28px;background:#fff;border:2px dashed var(--line);border-radius:18px;padding:16px}
+.teacher summary{font-weight:800;cursor:pointer}
+footer{margin-top:24px;font-size:14px;color:var(--muted);text-align:center}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- MENU -->
+<section id="menu" class="view on">
+  <header class="top"><h1 style="font-size:40px">Os Frascos das Emoções</h1></header>
+  <div class="stripe"><span style="background:var(--alegria)"></span><span style="background:var(--tristeza)"></span><span style="background:var(--raiva)"></span><span style="background:var(--medo)"></span><span style="background:var(--calma)"></span></div>
+  <p class="intro">Depois de ouvires a história <b>«O Monstro das Cores»</b>, vamos arrumar as emoções, cada uma no seu frasco! Escolhe uma atividade.</p>
+  <div class="grid">
+    <button class="act" style="--c:var(--alegria)" data-go="frascos"><span class="num">1</span><h3>Arruma as emoções</h3><p>Lê cada situação e coloca-a no frasco da emoção que sentirias.</p></button>
+    <button class="act" style="--c:var(--tristeza)" data-go="checkin"><span class="num">2</span><h3>Como me sinto hoje?</h3><p>Escolhe a tua cor, diz quanto sentes e porquê. No fim recebes o teu bilhete.</p></button>
+    <button class="act" style="--c:var(--calma)" data-go="meufrasco"><span class="num">3</span><h3>O meu frasco de hoje</h3><p>Enche o teu frasco com um bocadinho de cada emoção. Às vezes estão misturadas!</p></button>
+    <button class="act" style="--c:var(--raiva)" data-go="detetive"><span class="num">4</span><h3>Detetive das emoções</h3><p>Observa as caras e as pistas. Que emoção é esta?</p></button>
+    <button class="act" style="--c:#7B61C9" data-go="calma"><span class="num">5</span><h3>Caixa de calma</h3><p>Descobre o que te ajuda quando uma emoção fica muito grande. Respira comigo!</p></button>
+    <button class="act" style="--c:var(--medo)" data-go="desenho"><span class="num">6</span><h3>Desenha a tua emoção</h3><p>Usa as cores das emoções para desenhar o que sentes.</p></button>
+  </div>
+
+  <a class="pdf" href="Caderno_das_Emocoes.pdf" target="_blank" rel="noopener">📄 <span><b>Fichas para imprimir</b><br><small>«O Meu Caderno das Emoções» — 12 fichas de escrita e desenho (PDF)</small></span></a>
+
+  <details class="teacher">
+    <summary>Notas para o professor</summary>
+    <p class="small">Atividades pensadas para o pré-escolar e 1.º ciclo, depois da leitura da história de Anna Llenas. As cores seguem as do livro: amarelo – alegria, azul – tristeza, vermelho – raiva, preto – medo, verde – calma. No final da história surge uma nova emoção (o amor, cor-de-rosa) — vale a pena conversar sobre ela em grupo.</p>
+    <ul class="small">
+      <li><b>1. Arruma as emoções</b> – não há respostas erradas: o jogo mostra o que «muitos colegas» sentiriam, mas aceita a escolha do aluno. Bom ponto de partida para conversa: «Porque escolheste esse frasco?»</li>
+      <li><b>2. Como me sinto hoje?</b> – rotina de entrada (check-in). O bilhete final pode ser copiado ou mostrado ao professor. Nada fica gravado.</li>
+      <li><b>3. O meu frasco</b> – trabalha a ideia de emoções misturadas, como o monstro no início da história.</li>
+      <li><b>4. Detetive</b> – reconhecimento de expressões faciais e pistas do contexto (8 desafios).</li>
+      <li><b>5. Caixa de calma</b> – estratégias de autorregulação para cada emoção e um exercício de respiração guiada.</li>
+      <li><b>6. Desenho</b> – expressão livre; peça ao aluno que mostre e explique o desenho.</li>
+    </ul>
+    <p class="small">Se um aluno partilhar algo que o preocupe, dê espaço para conversar em privado e, se necessário, encaminhe para a equipa de apoio.</p>
+  </details>
+  <footer>Atividades originais inspiradas em «O Monstro das Cores», de Anna Llenas.</footer>
+</section>
+
+<!-- 1 FRASCOS -->
+<section id="frascos" class="view">
+  <button class="back" data-go="menu">← Menu</button>
+  <h2 style="margin-top:12px">1. Arruma as emoções</h2>
+  <p class="intro">Toca numa situação e depois no frasco da emoção que <b>tu</b> sentirias.</p>
+  <div class="cards" id="sitCards"></div>
+  <div class="feedback" id="sitFb"></div>
+  <div class="jars" id="jarRow"></div>
+  <div class="center" id="sitEnd" hidden>
+    <h3 style="margin-top:16px">Muito bem! Arrumaste todas as emoções. 🎉</h3>
+    <p>Qual foi o frasco que ficou mais cheio? Conta a um colega porquê.</p>
+    <button class="btn" id="sitAgain">Jogar outra vez</button>
+  </div>
+</section>
+
+<!-- 2 CHECKIN -->
+<section id="checkin" class="view">
+  <button class="back" data-go="menu">← Menu</button>
+  <h2 style="margin-top:12px">2. Como me sinto hoje?</h2>
+  <div class="panel">
+    <div class="steps" id="ckSteps"><i></i><i></i><i></i><i></i><i></i></div>
+    <div id="ckBody"></div>
+  </div>
+</section>
+
+<!-- 3 MEU FRASCO -->
+<section id="meufrasco" class="view">
+  <button class="back" data-go="menu">← Menu</button>
+  <h2 style="margin-top:12px">3. O meu frasco de hoje</h2>
+  <p class="intro">Às vezes sentimos várias emoções ao mesmo tempo. Mexe nos botões e enche o teu frasco.</p>
+  <div class="panel myjar">
+    <div class="center"><svg id="bigJar" viewBox="0 0 200 260" style="width:100%;max-width:260px"></svg></div>
+    <div>
+      <div id="sliders"></div>
+      <p id="jarMsg" style="font-weight:700;margin-top:14px"></p>
+      <button class="btn ghost" id="jarReset">Esvaziar o frasco</button>
+    </div>
+  </div>
+</section>
+
+<!-- 4 DETETIVE -->
+<section id="detetive" class="view">
+  <button class="back" data-go="menu">← Menu</button>
+  <h2 style="margin-top:12px">4. Detetive das emoções 🔍</h2>
+  <div class="panel center" id="qzBody"></div>
+</section>
+
+<!-- 5 CALMA -->
+<section id="calma" class="view">
+  <button class="back" data-go="menu">← Menu</button>
+  <h2 style="margin-top:12px">5. Caixa de calma</h2>
+  <p class="intro">Quando uma emoção fica muito grande, o que te pode ajudar? Escolhe a emoção e marca as ideias que queres experimentar.</p>
+  <div class="emos" id="calmEmos"></div>
+  <div class="strats" id="strats"></div>
+  <div class="panel center" style="margin-top:18px">
+    <h3>Respira comigo</h3>
+    <p class="small">Quando a bola cresce, enche a barriga de ar. Quando encolhe, deita o ar fora devagarinho.</p>
+    <div class="breath" id="breath"><div class="ball"></div><span id="breathTxt">Pronto?</span></div>
+    <button class="btn" id="breathBtn">Começar</button>
+    <p class="small" id="breathCount"></p>
+  </div>
+</section>
+
+<!-- 6 DESENHO -->
+<section id="desenho" class="view">
+  <button class="back" data-go="menu">← Menu</button>
+  <h2 style="margin-top:12px">6. Desenha a tua emoção</h2>
+  <div class="prompt" id="drawPrompt"></div>
+  <div class="drawbar" id="drawBar"></div>
+  <canvas id="cv" width="1200" height="900" aria-label="Área de desenho"></canvas>
+  <p class="small center">Quando acabares, mostra o desenho ao teu professor e conta-lhe o que desenhaste.</p>
+</section>
+
+</div>
+
+<script>
+const EMO = {
+  alegria:{nome:"Alegria",cor:"var(--alegria)",hex:"#F5C02B",light:true,face:"alegria"},
+  tristeza:{nome:"Tristeza",cor:"var(--tristeza)",hex:"#3A7BD5"},
+  raiva:{nome:"Raiva",cor:"var(--raiva)",hex:"#E2453B"},
+  medo:{nome:"Medo",cor:"var(--medo)",hex:"#2B2B36"},
+  calma:{nome:"Calma",cor:"var(--calma)",hex:"#3BAA66"}
+};
+const KEYS = Object.keys(EMO);
+const $ = s => document.querySelector(s);
+const el = (tag, props={}, html="") => { const e=document.createElement(tag); Object.assign(e,props); if(html) e.innerHTML=html; return e; };
+const shuffle = a => a.map(v=>[Math.random(),v]).sort((x,y)=>x[0]-y[0]).map(x=>x[1]);
+
+/* ---------- navigation ---------- */
+function go(id){
+  document.querySelectorAll(".view").forEach(v=>v.classList.toggle("on", v.id===id));
+  window.scrollTo(0,0);
+  if(id!=="calma") stopBreath();
+  if(id==="frascos" && !sitState) startSit();
+  if(id==="checkin" && ckStep===0) renderCk();
+  if(id==="detetive" && !qz) startQuiz();
+  if(id==="desenho") newPrompt();
+}
+document.addEventListener("click", e=>{ const g=e.target.closest("[data-go]"); if(g) go(g.dataset.go); });
+
+/* ---------- jar svg ---------- */
+function jarSVG(hex, fill){ // fill 0..1
+  const h = 120*fill, y = 150-h;
+  return `<svg viewBox="0 0 100 165" aria-hidden="true">
+    <rect x="30" y="6" width="40" height="14" rx="4" fill="${hex}"/>
+    <path d="M26 24 h48 v8 c10 6 14 14 14 26 v86 a14 14 0 0 1 -14 14 h-48 a14 14 0 0 1 -14 -14 v-86 c0 -12 4 -20 14 -26z" fill="#fff" stroke="#2A2A35" stroke-width="3"/>
+    <clipPath id="c${hex.slice(1)}"><path d="M15 60 v84 a12 12 0 0 0 12 12 h46 a12 12 0 0 0 12 -12 v-84z"/></clipPath>
+    <rect clip-path="url(#c${hex.slice(1)})" x="10" y="${y+6}" width="80" height="${h+10}" fill="${hex}" opacity=".9" style="transition:all .4s"/>
+    <path d="M24 70 v50" stroke="#fff" stroke-width="5" stroke-linecap="round" opacity=".6"/>
+  </svg>`;
+}
+
+/* ---------- 1. FRASCOS ---------- */
+const SITS = [
+  ["Ganhei um jogo com os meus amigos.","alegria"],
+  ["O meu melhor amigo mudou de escola.","tristeza"],
+  ["Alguém estragou o meu desenho de propósito.","raiva"],
+  ["Ouvi um barulho estranho durante a noite.","medo"],
+  ["Estou deitado na relva a ouvir os passarinhos.","calma"],
+  ["Vou à festa de anos da minha prima.","alegria"],
+  ["Perdi o meu brinquedo preferido.","tristeza"],
+  ["Não me deixaram entrar na brincadeira.","raiva"],
+  ["Tenho de apresentar um trabalho à turma.","medo"],
+  ["Estou no colo da minha família a ler uma história.","calma"]
+];
+let sitState=null, selSit=null;
+function startSit(){
+  sitState={left:shuffle(SITS.map((s,i)=>i)).slice(0,10), count:Object.fromEntries(KEYS.map(k=>[k,0]))};
+  selSit=null; $("#sitEnd").hidden=true; $("#sitFb").textContent=""; $("#sitFb").style.background="";
+  renderSit();
+}
+function renderSit(){
+  const c=$("#sitCards"); c.innerHTML="";
+  sitState.left.slice(0,3).forEach(i=>{
+    const b=el("button",{className:"sit"},SITS[i][0]);
+    b.setAttribute("aria-pressed", selSit===i);
+    b.onclick=()=>{selSit=i; renderSit();};
+    c.appendChild(b);
+  });
+  const r=$("#jarRow"); r.innerHTML="";
+  KEYS.forEach(k=>{
+    const max=4, f=Math.min(sitState.count[k]/max,1);
+    const b=el("button",{className:"jar"+(selSit!==null?" ready":"")},jarSVG(EMO[k].hex,f)+`<span class="lbl">${EMO[k].nome}</span>`);
+    b.setAttribute("aria-label","Frasco da "+EMO[k].nome);
+    b.onclick=()=>dropSit(k);
+    r.appendChild(b);
+  });
+}
+function dropSit(k){
+  const fb=$("#sitFb");
+  if(selSit===null){fb.textContent="Primeiro escolhe uma situação lá em cima. 👆"; fb.style.background="#FFF3D6"; return;}
+  const expected=SITS[selSit][1];
+  sitState.count[k]++;
+  sitState.left=sitState.left.filter(i=>i!==selSit);
+  if(k===expected){ fb.innerHTML=`Isso mesmo! Muitas pessoas sentiriam <b>${EMO[k].nome.toLowerCase()}</b>. ✨`; }
+  else { fb.innerHTML=`Sentes <b>${EMO[k].nome.toLowerCase()}</b>? Muitos colegas sentiriam <b>${EMO[expected].nome.toLowerCase()}</b>. Cada pessoa sente à sua maneira — está tudo bem! 💛`; }
+  fb.style.background="#F1F7EE";
+  selSit=null; renderSit();
+  if(!sitState.left.length){ $("#sitEnd").hidden=false; $("#sitCards").innerHTML=""; }
+}
+$("#sitAgain").onclick=startSit;
+
+/* ---------- 2. CHECK-IN ---------- */
+let ckStep=0, ck={};
+const CORPO=["Na barriga","No peito","Na cabeça","Nas mãos","Nas pernas","Na cara","Não sei"];
+const PARTILHA=["O meu professor","Um amigo","A minha família","Ninguém, por agora"];
+function setSteps(){ document.querySelectorAll("#ckSteps i").forEach((s,i)=>s.classList.toggle("on",i<=ckStep)); }
+function renderCk(){
+  setSteps(); const b=$("#ckBody"); b.innerHTML="";
+  const sel = ck.emo? EMO[ck.emo].hex : "#2A2A35";
+  b.style.setProperty("--sel", sel);
+  if(ckStep===0){
+    b.innerHTML=`<h3 class="center">De que cor está o teu coração hoje?</h3><div class="emos"></div>`;
+    const w=b.querySelector(".emos");
+    KEYS.forEach(k=>{const e=el("button",{className:"emo"+(EMO[k].light?" light":"")},EMO[k].nome); e.style.setProperty("--c",EMO[k].cor); e.setAttribute("aria-pressed",ck.emo===k); e.onclick=()=>{ck.emo=k; ckStep=1; renderCk();}; w.appendChild(e);});
+  }
+  if(ckStep===1){
+    b.innerHTML=`<h3 class="center">Quanta ${EMO[ck.emo].nome.toLowerCase()} sentes?</h3><p class="small center">1 = um bocadinho … 5 = muitíssimo</p><div class="scale"></div>`;
+    const w=b.querySelector(".scale");
+    for(let n=1;n<=5;n++){const e=el("button",{},n); e.setAttribute("aria-pressed",ck.nivel===n); e.onclick=()=>{ck.nivel=n; ckStep=2; renderCk();}; w.appendChild(e);}
+    b.appendChild(navCk());
+  }
+  if(ckStep===2){
+    b.innerHTML=`<h3 class="center">Onde sentes essa emoção no teu corpo?</h3><p class="small center">Podes escolher mais do que um sítio.</p><div class="row" style="justify-content:center"></div>`;
+    ck.corpo=ck.corpo||[];
+    const w=b.querySelector(".row");
+    CORPO.forEach(c=>{const e=el("button",{className:"chip"},c); e.setAttribute("aria-pressed",ck.corpo.includes(c)); e.onclick=()=>{ck.corpo=ck.corpo.includes(c)?ck.corpo.filter(x=>x!==c):[...ck.corpo,c]; e.setAttribute("aria-pressed",ck.corpo.includes(c));}; w.appendChild(e);});
+    b.appendChild(navCk(true));
+  }
+  if(ckStep===3){
+    b.innerHTML=`<h3 class="center">Porque te sentes assim?</h3><p class="small center">Escreve uma frase ou algumas palavras. Se não quiseres, podes passar à frente.</p><textarea id="ckTxt" placeholder="Sinto-me assim porque…"></textarea>`;
+    b.querySelector("#ckTxt").value=ck.porque||"";
+    b.querySelector("#ckTxt").oninput=e=>ck.porque=e.target.value;
+    b.appendChild(navCk(true));
+  }
+  if(ckStep===4){
+    b.innerHTML=`<h3 class="center">Com quem gostavas de falar sobre isto?</h3><div class="row" style="justify-content:center"></div>`;
+    const w=b.querySelector(".row");
+    PARTILHA.forEach(c=>{const e=el("button",{className:"chip"},c); e.setAttribute("aria-pressed",ck.partilha===c); e.onclick=()=>{ck.partilha=c; ckStep=5; renderCk();}; w.appendChild(e);});
+    b.appendChild(navCk());
+  }
+  if(ckStep===5){ ticket(b); }
+}
+function navCk(next){
+  const r=el("div",{className:"row"}); r.style.cssText="justify-content:center;margin-top:16px";
+  const back=el("button",{className:"btn ghost"},"← Voltar"); back.onclick=()=>{ckStep--; renderCk();}; r.appendChild(back);
+  if(next){const n=el("button",{className:"btn"},"Seguinte →"); n.onclick=()=>{ckStep++; renderCk();}; r.appendChild(n);}
+  return r;
+}
+const DICA={
+  alegria:"Que bom! Partilha a tua alegria com alguém — ela cresce quando a dividimos.",
+  tristeza:"Estar triste é normal. Um abraço, uma conversa ou um desenho podem ajudar.",
+  raiva:"A raiva é como fogo. Respira fundo três vezes e conta até 10 antes de agir.",
+  medo:"Todos temos medo às vezes. Fala com um adulto de confiança — juntos é mais fácil.",
+  calma:"Que bom sentires-te tranquilo! Lembra-te deste momento para quando precisares."
+};
+function ticket(b){
+  const e=EMO[ck.emo];
+  const txt=`O meu bilhete das emoções\nHoje sinto: ${e.nome} (${ck.nivel}/5)\nOnde sinto: ${(ck.corpo&&ck.corpo.length)?ck.corpo.join(", "):"—"}\nPorquê: ${ck.porque||"—"}\nQuero falar com: ${ck.partilha||"—"}`;
+  b.innerHTML=`<div class="ticket"><h3>O meu bilhete das emoções</h3>
+    <p><b>Hoje sinto:</b> ${e.nome} ${"●".repeat(ck.nivel)}${"○".repeat(5-ck.nivel)}</p>
+    <p><b>Onde sinto:</b> ${(ck.corpo&&ck.corpo.length)?ck.corpo.join(", "):"—"}</p>
+    <p><b>Porquê:</b> ${ck.porque?escapeHtml(ck.porque):"—"}</p>
+    <p><b>Quero falar com:</b> ${ck.partilha||"—"}</p>
+    <p style="background:#FFF9EF;border-radius:12px;padding:10px">💡 ${DICA[ck.emo]}</p></div>
+    <div class="row" style="justify-content:center;margin-top:16px"><button class="btn ghost" id="ckCopy">Copiar bilhete</button><button class="btn" id="ckNew">Começar de novo</button></div>
+    <p class="small center" id="ckMsg">Mostra o teu bilhete ao professor.</p>`;
+  b.querySelector("#ckNew").onclick=()=>{ck={}; ckStep=0; renderCk();};
+  b.querySelector("#ckCopy").onclick=async()=>{try{await navigator.clipboard.writeText(txt); $("#ckMsg").textContent="Bilhete copiado! ✔";}catch(_){ $("#ckMsg").textContent="Não foi possível copiar — mostra o ecrã ao professor.";}};
+}
+function escapeHtml(s){return s.replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+
+/* ---------- 3. MEU FRASCO ---------- */
+const mix=Object.fromEntries(KEYS.map(k=>[k,0]));
+function buildSliders(){
+  const w=$("#sliders"); w.innerHTML="";
+  KEYS.forEach(k=>{
+    const r=el("div",{className:"slider"});
+    r.style.setProperty("--c",EMO[k].hex);
+    r.innerHTML=`<label for="s-${k}" style="color:${k==='alegria'?'#9a7400':EMO[k].hex}">${EMO[k].nome}</label><input type="range" id="s-${k}" min="0" max="5" value="${mix[k]}"><span id="v-${k}">${mix[k]}</span>`;
+    r.querySelector("input").oninput=e=>{mix[k]=+e.target.value; $("#v-"+k).textContent=mix[k]; drawBigJar();};
+    w.appendChild(r);
+  });
+  drawBigJar();
+}
+function drawBigJar(){
+  const total=KEYS.reduce((a,k)=>a+mix[k],0);
+  const H=180, top=240-Math.min(total/12,1)*H; // max ~12 units fills
+  let y=240, layers="";
+  const per = total? (240-top)/total : 0;
+  KEYS.forEach(k=>{ if(!mix[k]) return; const h=mix[k]*per; y-=h;
+    layers+=`<path d="M10 ${y+h} Q55 ${y+h-8} 100 ${y+h} T190 ${y+h} V${y} Q145 ${y+8} 100 ${y} T10 ${y}Z" fill="${EMO[k].hex}" style="transition:all .3s"/>`; });
+  $("#bigJar").innerHTML=`
+    <rect x="62" y="4" width="76" height="22" rx="6" fill="#C9A26A"/>
+    <clipPath id="bj"><path d="M40 52 c-14 8 -20 20 -20 36 v136 a20 20 0 0 0 20 20 h120 a20 20 0 0 0 20 -20 v-136 c0 -16 -6 -28 -20 -36z"/></clipPath>
+    <g clip-path="url(#bj)">${layers}</g>
+    <path d="M56 30 h88 v14 c18 8 30 22 30 44 v136 a22 22 0 0 1 -22 22 h-104 a22 22 0 0 1 -22 -22 v-136 c0 -22 12 -36 30 -44z" fill="none" stroke="#2A2A35" stroke-width="4"/>
+    <path d="M40 100 v80" stroke="#fff" stroke-width="8" stroke-linecap="round" opacity=".55"/>`;
+  const used=KEYS.filter(k=>mix[k]>0);
+  let m;
+  if(!used.length) m="O teu frasco está vazio. Que emoções tens hoje?";
+  else if(used.length===1) m=`Hoje o teu frasco tem só ${EMO[used[0]].nome.toLowerCase()}.`;
+  else { const big=used.reduce((a,b)=>mix[a]>=mix[b]?a:b); m=`O teu frasco tem ${used.length} emoções misturadas — tal como o monstro no início da história! A maior é a ${EMO[big].nome.toLowerCase()}.`; }
+  $("#jarMsg").textContent=m;
+}
+$("#jarReset").onclick=()=>{KEYS.forEach(k=>mix[k]=0); buildSliders();};
+buildSliders();
+
+/* ---------- 4. DETETIVE ---------- */
+function faceSVG(k){
+  const c=EMO[k].hex, f= k==="medo"?"#fff":"#2A2A35";
+  const parts={
+    alegria:`<path d="M48 58 q6 -8 12 0 M80 58 q6 -8 12 0" stroke="${f}" stroke-width="5" fill="none" stroke-linecap="round"/><path d="M45 82 q25 30 50 0z" fill="${f}"/>`,
+    tristeza:`<circle cx="54" cy="60" r="5" fill="${f}"/><circle cx="86" cy="60" r="5" fill="${f}"/><path d="M42 48 l16 -6 M98 48 l-16 -6" stroke="${f}" stroke-width="4" stroke-linecap="round"/><path d="M50 98 q20 -18 40 0" stroke="${f}" stroke-width="5" fill="none" stroke-linecap="round"/><path d="M90 70 q4 10 0 14 q-4 -4 0 -14z" fill="#9fd0ff"/>`,
+    raiva:`<path d="M40 46 l22 10 M100 46 l-22 10" stroke="${f}" stroke-width="6" stroke-linecap="round"/><circle cx="55" cy="64" r="5" fill="${f}"/><circle cx="85" cy="64" r="5" fill="${f}"/><path d="M50 96 h40" stroke="${f}" stroke-width="6" stroke-linecap="round"/><path d="M52 90 l8 6 l8 -6 l8 6 l8 -6 l6 6" stroke="${f}" stroke-width="2" fill="none"/>`,
+    medo:`<circle cx="54" cy="60" r="10" fill="#fff"/><circle cx="86" cy="60" r="10" fill="#fff"/><circle cx="54" cy="62" r="4" fill="#2A2A35"/><circle cx="86" cy="62" r="4" fill="#2A2A35"/><path d="M44 42 q10 -8 20 -2 M96 42 q-10 -8 -20 -2" stroke="${f}" stroke-width="4" fill="none" stroke-linecap="round"/><ellipse cx="70" cy="96" rx="10" ry="13" fill="#fff"/>`,
+    calma:`<path d="M46 62 q8 6 16 0 M78 62 q8 6 16 0" stroke="${f}" stroke-width="5" fill="none" stroke-linecap="round"/><path d="M54 90 q16 10 32 0" stroke="${f}" stroke-width="5" fill="none" stroke-linecap="round"/>`
+  };
+  return `<svg class="face" viewBox="0 0 140 140" aria-hidden="true"><circle cx="70" cy="70" r="62" fill="${c}"/>${parts[k]}</svg>`;
+}
+const QZ=[
+  {k:"alegria",p:"A Rita abriu a prenda de anos e saltou de contente."},
+  {k:"medo",p:"O Tomás está no escuro e ouve a porta ranger."},
+  {k:"tristeza",p:"A Leonor despediu-se do avô, que vai viver para longe."},
+  {k:"raiva",p:"O Duarte estava na fila e alguém passou-lhe à frente."},
+  {k:"calma",p:"A Inês está na praia a ouvir o barulho das ondas."},
+  {k:"raiva",p:"O Martim apertou os punhos e ficou com a cara vermelha."},
+  {k:"tristeza",p:"O gato da Beatriz fugiu e ela não o encontra."},
+  {k:"alegria",p:"A turma do Afonso ganhou o concurso da escola!"}
+];
+let qz=null;
+function startQuiz(){ qz={list:shuffle(QZ),i:0,ok:0,tries:0}; renderQuiz(); }
+function renderQuiz(){
+  const b=$("#qzBody");
+  if(qz.i>=qz.list.length){
+    b.innerHTML=`<h3>És um ótimo detetive das emoções! 🕵️</h3><p>Acertaste à primeira em <b>${qz.ok}</b> de ${qz.list.length} casos.</p><p>Agora pensa: quando foi a última vez que sentiste cada uma destas emoções?</p><button class="btn" id="qzAgain">Jogar outra vez</button>`;
+    b.querySelector("#qzAgain").onclick=startQuiz; return;
+  }
+  const q=qz.list[qz.i]; qz.tries=0;
+  b.innerHTML=`<div class="prog"><div style="width:${qz.i/qz.list.length*100}%"></div></div>
+    <p class="small">Caso ${qz.i+1} de ${qz.list.length}</p>${faceSVG(q.k)}
+    <p style="font-weight:700;font-size:20px;margin:14px 0 0">${q.p}</p><p class="small">Que emoção está a sentir?</p>
+    <div class="opts"></div><p class="feedback" id="qzFb"></p>`;
+  const o=b.querySelector(".opts");
+  KEYS.forEach(k=>{
+    const btn=el("button",{className:"opt"},EMO[k].nome); btn.style.setProperty("--c",EMO[k].hex);
+    btn.onclick=()=>{
+      if(btn.disabled) return;
+      qz.tries++;
+      if(k===q.k){
+        btn.classList.add("ok"); if(qz.tries===1) qz.ok++;
+        o.querySelectorAll(".opt").forEach(x=>{x.disabled=true; if(x!==btn) x.classList.add("no");});
+        $("#qzFb").textContent="Descobriste! 🎉"; $("#qzFb").style.background="#EAF6EE";
+        setTimeout(()=>{qz.i++; renderQuiz();},1300);
+      } else {
+        btn.classList.add("no"); btn.disabled=true;
+        $("#qzFb").textContent="Hmm… olha bem para os olhos e a boca. Tenta outra vez!"; $("#qzFb").style.background="#FFF3D6";
+      }
+    };
+    o.appendChild(btn);
+  });
+}
+
+/* ---------- 5. CALMA ---------- */
+const STR={
+  alegria:[["🗣️","Contar a alguém o que me fez feliz"],["💃","Dançar ou cantar"],["🎨","Fazer um desenho alegre"],["🤗","Dar um abraço"]],
+  tristeza:[["🤗","Pedir um abraço"],["🗣️","Falar com alguém de quem gosto"],["😢","Chorar um bocadinho — faz bem"],["🧸","Abraçar o meu peluche ou uma almofada"]],
+  raiva:[["🌬️","Respirar fundo 3 vezes"],["🔢","Contar até 10 devagar"],["🚶","Afastar-me um pouco e acalmar"],["✊","Apertar uma bola e largar"]],
+  medo:[["🧑‍🏫","Contar a um adulto de confiança"],["💡","Acender uma luz"],["💪","Dizer: «Eu sou capaz!»"],["🤝","Dar a mão a alguém"]],
+  calma:[["📖","Ler um livro"],["🌿","Ouvir os sons da natureza"],["🎵","Ouvir música tranquila"],["🧘","Fechar os olhos e respirar"]]
+};
+let calmSel="raiva"; const picked=new Set();
+function renderCalm(){
+  const w=$("#calmEmos"); w.innerHTML="";
+  KEYS.forEach(k=>{const e=el("button",{className:"emo"+(EMO[k].light?" light":"")},EMO[k].nome); e.style.setProperty("--c",EMO[k].cor); e.setAttribute("aria-pressed",calmSel===k); e.onclick=()=>{calmSel=k; renderCalm();}; w.appendChild(e);});
+  const s=$("#strats"); s.innerHTML="";
+  STR[calmSel].forEach(([ic,t])=>{const id=calmSel+t; const b=el("button",{className:"strat"},`<span class="e">${ic}</span>${t}`); b.style.setProperty("--c",EMO[calmSel].hex); if(calmSel==="alegria") b.style.setProperty("--c","#D9A400"); b.setAttribute("aria-pressed",picked.has(id)); b.onclick=()=>{picked.has(id)?picked.delete(id):picked.add(id); b.setAttribute("aria-pressed",picked.has(id));}; s.appendChild(b);});
+}
+renderCalm();
+let bTimer=null, bCycles=0;
+function stopBreath(){ clearInterval(bTimer); bTimer=null; $("#breath").classList.remove("in"); $("#breathTxt").textContent="Pronto?"; $("#breathBtn").textContent="Começar"; }
+$("#breathBtn").onclick=()=>{
+  if(bTimer){stopBreath(); return;}
+  bCycles=0; $("#breathBtn").textContent="Parar"; let inhale=true;
+  const step=()=>{ const br=$("#breath"); br.classList.toggle("in",inhale); $("#breathTxt").textContent=inhale?"Inspira…":"Expira…"; if(!inhale){bCycles++; $("#breathCount").textContent=`Respirações: ${bCycles} de 5`;} if(!inhale && bCycles>=5){clearInterval(bTimer); bTimer=null; setTimeout(()=>{$("#breath").classList.remove("in"); $("#breathTxt").textContent="Muito bem! 🌿"; $("#breathBtn").textContent="Outra vez";},4000);} inhale=!inhale; };
+  step(); bTimer=setInterval(step,4000);
+};
+
+/* ---------- 6. DESENHO ---------- */
+const PROMPTS=["Desenha uma coisa que te deixa alegre.","Desenha um sítio onde te sentes calmo.","Desenha o que fazes quando estás triste.","Desenha a tua raiva. Que forma tem?","Desenha algo que te dá medo — e algo que te dá coragem!","Desenha como te sentes neste momento.","Desenha a tua própria criatura das emoções. Que cores tem?"];
+let pIdx=-1;
+function newPrompt(){ pIdx=(pIdx+1)%PROMPTS.length; $("#drawPrompt").innerHTML=`✏️ ${PROMPTS[pIdx]}`; }
+const cv=$("#cv"), ctx=cv.getContext("2d");
+ctx.fillStyle="#fff"; ctx.fillRect(0,0,cv.width,cv.height);
+let pen={color:EMO.alegria.hex,size:14}, drawing=false, last=null;
+(function buildBar(){
+  const bar=$("#drawBar");
+  [...KEYS.map(k=>[EMO[k].hex,EMO[k].nome]),["#F48FB1","Cor-de-rosa"],["#ffffff","Borracha"]].forEach(([c,n],i)=>{
+    const s=el("button",{className:"sw",title:n}); s.style.background=c==="#ffffff"?"repeating-conic-gradient(#ddd 0 25%,#fff 0 50%) 0/12px 12px":c; s.setAttribute("aria-label",n); s.setAttribute("aria-pressed",i===0);
+    s.onclick=()=>{pen.color=c; bar.querySelectorAll(".sw").forEach(x=>x.setAttribute("aria-pressed",x===s));}; bar.appendChild(s);
+  });
+  [["Fino",6],["Médio",14],["Grosso",32]].forEach(([n,v])=>{const b=el("button",{className:"chip"},n); b.setAttribute("aria-pressed",v===14); b.dataset.size=v; b.onclick=()=>{pen.size=v; bar.querySelectorAll("[data-size]").forEach(x=>x.setAttribute("aria-pressed",x===b));}; bar.appendChild(b);});
+  const np=el("button",{className:"chip"},"Outra ideia 💡"); np.onclick=newPrompt; bar.appendChild(np);
+  const cl=el("button",{className:"chip"},"Limpar 🧽"); cl.onclick=()=>{ctx.fillStyle="#fff"; ctx.fillRect(0,0,cv.width,cv.height);}; bar.appendChild(cl);
+})();
+function pos(e){const r=cv.getBoundingClientRect(); return {x:(e.clientX-r.left)*cv.width/r.width, y:(e.clientY-r.top)*cv.height/r.height};}
+cv.addEventListener("pointerdown",e=>{drawing=true; last=pos(e); cv.setPointerCapture(e.pointerId); dot(last);});
+cv.addEventListener("pointermove",e=>{ if(!drawing) return; const p=pos(e); ctx.strokeStyle=pen.color; ctx.lineWidth=pen.size*(cv.width/cv.getBoundingClientRect().width)*.6; ctx.lineCap="round"; ctx.lineJoin="round"; ctx.beginPath(); ctx.moveTo(last.x,last.y); ctx.lineTo(p.x,p.y); ctx.stroke(); last=p; });
+["pointerup","pointercancel","pointerleave"].forEach(t=>cv.addEventListener(t,()=>drawing=false));
+function dot(p){ctx.fillStyle=pen.color; ctx.beginPath(); ctx.arc(p.x,p.y,pen.size*(cv.width/cv.getBoundingClientRect().width)*.3,0,Math.PI*2); ctx.fill();}
+</script>
+</body>
+</html>
